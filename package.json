@@ -1,0 +1,42 @@
+{
+  "name": "your-app-name",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "prisma": {
+    "seed": "node prisma/seeds.js"
+  },
+  "scripts": {
+    "prisma-setup": "prisma init --datasource-provider postgresql",
+    "dev": "node --watch app.js",
+    "generate-prisma-client": "prisma generate --sql",
+    "migrate-initial-schema": "prisma migrate dev --name init",
+    "migrate-new-schema": "prisma migrate dev",
+    "prisma-studio": "prisma studio",
+    "sow-seeds": "prisma db seed",
+    "start": "node app.js",
+    "sync-db->prisma": "prisma db pull",
+    "sync-prisma->db": "prisma db push"
+  },
+  "keywords": [],
+  "author": "Swagatam Pati <swagatamheroz@gmail.com>",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "bcryptjs": "^3.0.2",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}

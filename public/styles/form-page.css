@@ -1,0 +1,172 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #495057;
+
+  & > a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    font-family: "Tektur", sans-serif;
+    font-size: 1.2rem;
+    color: #d3d3d3;
+    letter-spacing: 0.1ch;
+    font-weight: 500;
+
+    & > svg {
+      stroke: #e5383b;
+    }
+  }
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    font-size: 0.8rem;
+
+    & > a {
+      background-color: #0b090a;
+      border: 1px solid #495057;
+      border-radius: 5px;
+      padding: 0.5rem 0.8rem;
+    }
+  }
+}
+
+main {
+  flex-grow: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    transform: scale(1.1);
+
+    & > span {
+      align-self: center;
+
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      font-family: "Tektur", sans-serif;
+      letter-spacing: 0.1ch;
+      font-size: 2rem;
+
+      margin-bottom: 3rem;
+
+      & > svg {
+        width: 3rem;
+        height: 3rem;
+        stroke-width: 1.5;
+        stroke: #e5383b;
+      }
+    }
+
+    & > p:first-of-type {
+      font-size: 1.4rem;
+      font-family: "Tektur", sans-serif;
+    }
+
+    & > p:last-of-type {
+      font-size: 0.9rem;
+
+      margin-bottom: 0.5rem;
+
+      & > a {
+        color: #e5383b;
+      }
+
+      & > a:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & > form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      margin-top: 0.8rem;
+      min-width: 300px;
+
+      & > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+
+        & > label {
+          font-size: 0.85rem;
+
+          margin-left: 0.2rem;
+        }
+
+        & > input {
+          appearance: none;
+          outline: none;
+
+          padding: 0.6rem;
+          border-radius: 5px;
+          background-color: #212529;
+          border: 2px solid #495057;
+
+          font-weight: inherit;
+          font-size: inherit;
+          font-style: inherit;
+          color: inherit;
+        }
+
+        & > input:focus {
+          border-color: #e5383b;
+
+          transition: border-color 0.3s;
+        }
+      }
+
+      & > button {
+        appearance: none;
+        outline: none;
+
+        font-weight: inherit;
+        font-size: 0.9rem;
+        font-style: inherit;
+        color: inherit;
+
+        width: fit-content;
+        background-color: #212529;
+        padding: 0.5rem 1rem;
+        border: 1px solid #495057;
+        border-radius: 5px;
+
+        cursor: pointer;
+      }
+
+      & > button:focus {
+        border-color: #e5383b;
+        transition: border-color 0.3s;
+      }
+
+      & > button:hover {
+        background-color: #161a1d;
+        transition: border-color 0.3s;
+      }
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  nav > a > p {
+    display: none;
+  }
+}

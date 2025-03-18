@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/styles/index.css">
+  <link rel="stylesheet" href="/styles/form-page.css">
+
+  <title><%= title %></title>
+</head>
+
+<body>
+  <nav>
+    <a href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M3 5V19A9 3 0 0 0 15 21.84" />
+        <path d="M21 5V8" />
+        <path d="M21 12L18 17H22L19 22" />
+        <path d="M3 12A9 3 0 0 0 14.59 14.87" />
+      </svg>
+      <p>FileBase</p>
+    </a>
+    <div>
+      <a href="/sign-in">Sign In</a>
+      <a href="/sign-up">Sign Up</a>
+      <a href="/sign-out">Sign Out</a>
+    </div>
+  </nav>
+
+  <main>
+    <div>
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="12" cy="5" rx="9" ry="3" />
+          <path d="M3 5V19A9 3 0 0 0 15 21.84" />
+          <path d="M21 5V8" />
+          <path d="M21 12L18 17H22L19 22" />
+          <path d="M3 12A9 3 0 0 0 14.59 14.87" />
+        </svg>
+        FileBase
+      </span>
+
+      <% if (type === "sign-in") { %>
+        <p>Sign In</p>
+        <p>
+          Don't have an account yet? <a href="/sign-up">Sign Up</a>
+        </p>
+      <% } else if (type === "sign-up") { %>
+        <p>Sign Up</p>
+        <p>
+          Already have an account? <a href="/sign-in">Sign In</a>
+        </p>
+      <% } %>
+
+      <form action="<%= actionRoute %>" method="POST">
+        <div>
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" required autofocus>
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required>
+        </div>
+
+        <% if (type === "sign-up") { %>
+          <div>
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" name="confirmPassword" id="confirm-password" required>
+          </div>
+        <% } %>
+
+        <button type="submit">
+          <%= type === "sign-in" ? "Sign In" : "Sign Up" %>
+        </button>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>

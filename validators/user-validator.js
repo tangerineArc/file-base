@@ -1,16 +1,36 @@
+import { PrismaClient } from "@prisma/client";
 import { body } from "express-validator";
+
+const prisma = new PrismaClient();
 
 const validateUser = [
   body("username")
     .trim()
-    .isLength({ min: 1 })
-    .withMessage("Email cannot be empty")
-    .isEmail()
-    .withMessage("Email is invalid"),
+    .isLength({ min: 3, max: 255 })
+    .withMessage(
+      "Username must be at least 3 characters and at most 255 characters long"
+    )
+    .isAlphanumeric()
+    .withMessage("Username must only have alphanumeric characters")
+    .custom(async (username) => {
+      const count = await prisma.user.count({
+        where: { username: username.toLowerCase() },
+      });
+      if (count) {
+        throw new Error(`Username ${username} has already been taken`);
+      }
+      return true;
+    }),
   body("password")
     .trim()
     .isLength({ min: 8 })
-    .withMessage("Password must be a minimum of 8 characters"),
+    .withMessage("Password must be a minimum of 8 characters")
+    .custom((password, { req }) => {
+      if (password !== req.body.confirmPassword) {
+        throw new Error("Password fields do not match");
+      }
+      return true;
+    }),
 ];
 
 export default validateUser;

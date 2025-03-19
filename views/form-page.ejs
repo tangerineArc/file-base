@@ -29,6 +29,37 @@
         FileBase
       </span>
 
+      <% if (locals.successMessages && successMessages.length) { %>
+        <section class="success">
+          <% successMessages.forEach(message => { %>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              <%= message %>
+            </div>
+          <% }); %>
+        </section>
+      <% } %>
+
+      <% if (locals.errorMessages && errorMessages.length) { %>
+        <section class="error">
+          <% errorMessages.forEach(message => { %>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" x2="12" y1="8" y2="12" />
+                <line x1="12" x2="12.01" y1="16" y2="16" />
+              </svg>
+              <%= message %>
+            </div>
+          <% }); %>
+        </section>
+      <% } %>
+
       <% if (type === "sign-in") { %>
         <p>Sign In</p>
         <p>
@@ -44,7 +75,7 @@
       <form action="<%= actionRoute %>" method="POST">
         <div>
           <label for="username">Username</label>
-          <input type="text" name="username" id="username" required autofocus>
+          <input type="text" name="username" id="username" required autofocus value="<%= locals.defaults?.username || "" %>">
         </div>
 
         <div>
@@ -65,6 +96,10 @@
       </form>
     </div>
   </main>
+
+  <script>
+    window.history.pushState({}, document.title, window.location.pathname);
+  </script>
 </body>
 
 </html>

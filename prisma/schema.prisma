@@ -15,23 +15,40 @@ model Session {
   expiresAt DateTime
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
+model User {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String @db.VarChar(255)
 
-  author   User @relation(fields: [authorId], references: [id])
-  authorId Int
+  folders Folder[]
 }
 
-model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
-  name         String?
-  passwordHash String  @db.VarChar(255)
+model Folder {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  name            String    @db.VarChar(255)
+  public          Boolean   @default(false)
+  visibilityPoint DateTime?
 
-  posts Post[]
+  files File[]
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  parentFolderId String?
+  parent         Folder?  @relation("ParentChildren", fields: [parentFolderId], references: [id])
+  children       Folder[] @relation("ParentChildren")
+}
+
+model File {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  name            String    @db.VarChar(255)
+  type            String    @db.VarChar(255)
+  size            Float
+  public          Boolean   @default(false)
+  visibilityPoint DateTime?
+
+  folder   Folder? @relation(fields: [folderId], references: [id])
+  folderId String?
 }

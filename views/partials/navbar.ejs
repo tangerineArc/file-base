@@ -11,8 +11,11 @@
     <p>FileBase</p>
   </a>
   <div>
-    <a href="/sign-in">Sign In</a>
-    <a href="/sign-up">Sign Up</a>
-    <a href="/sign-out">Sign Out</a>
+    <% if (locals.currentUser) { %>
+      <a href="/sign-out">Sign Out</a>
+    <% } else { %>
+      <a href="/sign-in">Sign In</a>
+      <a href="/sign-up">Sign Up</a>
+    <% } %>
   </div>
 </nav>

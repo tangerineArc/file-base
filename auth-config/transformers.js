@@ -8,7 +8,7 @@ const serializer = (user, done) => {
 
 const deserializer = async (id, done) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: id } });
+    const user = await prisma.user.findUnique({ where: { id } });
 
     done(null, user);
   } catch (err) {

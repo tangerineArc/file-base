@@ -7,8 +7,10 @@ const validateFolder = [
     .withMessage(
       "Folder name must be at least 1 character and at most 255 characters long"
     )
-    .isAlphanumeric()
-    .withMessage("Folder name must only contain alphanumeric characters"),
+    .matches(/^[ a-zA-Z0-9_\-]+$/)
+    .withMessage(
+      "Folder name must only contain alphanumeric characters, underscores, hyphens and spaces"
+    ),
 ];
 
 export default validateFolder;

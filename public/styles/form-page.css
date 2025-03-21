@@ -124,7 +124,7 @@ main {
 
           font-weight: inherit;
           font-size: inherit;
-          font-style: inherit;
+          font-family: inherit;
           color: inherit;
         }
 
@@ -141,7 +141,7 @@ main {
 
         font-weight: inherit;
         font-size: 0.9rem;
-        font-style: inherit;
+        font-family: inherit;
         color: inherit;
 
         width: fit-content;

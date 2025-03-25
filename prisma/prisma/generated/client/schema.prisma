@@ -1,0 +1,57 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["deno"]
+  output          = "./prisma/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model User {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String @db.VarChar(255)
+
+  folders Folder[]
+  files   File[]
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String   @db.VarChar(255)
+
+  files File[]
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  parentFolderId String?
+  parent         Folder?  @relation("ParentChildren", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  children       Folder[] @relation("ParentChildren")
+}
+
+model File {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  filename     String
+  originalName String
+  fileSize     Int
+  destination  String
+  mimetype     String
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId String?
+}

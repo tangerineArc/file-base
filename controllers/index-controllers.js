@@ -6,67 +6,100 @@ import asyncHandler from "express-async-handler";
 import { validationResult } from "express-validator";
 import passport from "passport";
 
+import storageClient from "../supabase-config/storage-client.js";
+
 import validateUser from "../validators/user-validator.js";
 
 const prisma = new PrismaClient();
 
-const renderHomePage = (req, res) => {
-  res.render("index.ejs");
-};
+const renderSignInPage = (req, res) => {
+  const errorMessages = req.session.messages;
+  req.session.messages = [];
 
-const renderRegisterPage = (req, res) => {
-  res.render("register.ejs");
-};
+  const successMessages = [];
+  if (req.query.success === "1") {
+    successMessages.push("Account created successfully");
+    successMessages.push("Sign in to continue");
+  }
 
-const renderLoginPage = (req, res) => {
-  res.render("login.ejs");
-};
-
-const logInUser = passport.authenticate("local", {
-  failureRedirect: "/login-failure",
-  successRedirect: "/login-success",
-});
-
-const logOutUser = (req, res, next) => {
-  req.logout((err) => {
-    if (err) return next(err);
-    res.redirect("/");
+  res.render("form-page.ejs", {
+    title: "FileBase | Sign In",
+    type: "sign-in",
+    actionRoute: "/sign-in",
+    errorMessages,
+    successMessages,
   });
 };
 
-const registerNewUser = [
+const renderSignUpPage = (req, res) => {
+  res.render("form-page.ejs", {
+    title: "FileBase | Sign Up",
+    type: "sign-up",
+    actionRoute: "/sign-up",
+  });
+};
+
+const renderHomePage = (req, res) => {
+  if (req.user) {
+    return res.redirect("/folders");
+  }
+  res.redirect("/sign-in");
+};
+
+const signInUser = passport.authenticate("local", {
+  failureRedirect: "/sign-in",
+  successRedirect: "/folders",
+  failureMessage: true,
+});
+
+const signOutUser = (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/sign-in");
+  });
+};
+
+const signUpUser = [
   validateUser,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new Error(
-        errors
-          .array()
-          .map((err) => err.msg)
-          .join(" :: ")
-      );
+      const { username } = req.body;
+
+      return res.status(400).render("form-page.ejs", {
+        title: "FileBase | Sign Up",
+        type: "sign-up",
+        actionRoute: "/sign-up",
+        errorMessages: errors.array().map((err) => err.msg),
+        defaults: { username },
+      });
     }
 
-    const { username, name, password } = req.body;
+    const { username, password } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await prisma.user.create({
-      data: {
-        email: username,
-        name,
-        passwordHash,
-      },
+    await prisma.user.create({ data: { username, passwordHash } });
+
+    const { data, error } = await storageClient.createBucket(username, {
+      public: false,
+      fileSizeLimit: "2MB",
     });
 
-    res.redirect("/login");
+    /* TO-DO: better error handling ui */
+    if (error) {
+      await prisma.user.delete({ where: username });
+      throw new Error(JSON.parse(error).message);
+    }
+
+    res.redirect("/sign-in?success=1");
   }),
 ];
 
 export {
-  logInUser,
-  logOutUser,
-  registerNewUser,
   renderHomePage,
-  renderLoginPage,
-  renderRegisterPage,
+  renderSignInPage,
+  renderSignUpPage,
+  signInUser,
+  signOutUser,
+  signUpUser,
 };

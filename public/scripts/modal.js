@@ -1,9 +1,12 @@
 const loader = document.querySelector("nav > span");
 
 (() => {
-  document.body.addEventListener("keydown", event => {
+  document.body.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      if (document.body.classList.contains("drawer-open") && document.body.classList.contains("modal-open")) {
+      if (
+        document.body.classList.contains("drawer-open") &&
+        document.body.classList.contains("modal-open")
+      ) {
         document.body.classList.remove("modal-open");
       } else {
         document.body.classList.remove("drawer-open");
@@ -21,7 +24,7 @@ const loader = document.querySelector("nav > span");
     document.body.classList.add("modal-open");
   });
 
-  dialog.querySelector(".modal-submit-button").addEventListener("click", () => {
+  dialog.querySelector(".new-form").addEventListener("submit", () => {
     dialog.close();
     loader.classList.add("loading");
   });
@@ -42,7 +45,7 @@ const loader = document.querySelector("nav > span");
     document.body.classList.add("modal-open");
   });
 
-  dialog.querySelector(".modal-submit-button").addEventListener("click", () => {
+  dialog.querySelector(".new-form").addEventListener("submit", () => {
     dialog.close();
     loader.classList.add("loading");
   });

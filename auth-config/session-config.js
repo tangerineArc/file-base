@@ -1,6 +1,6 @@
 "use strict";
 
-import { PrismaClient } from "npm:@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import session from "express-session";
 

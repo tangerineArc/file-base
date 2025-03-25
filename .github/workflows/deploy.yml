@@ -32,7 +32,7 @@ jobs:
         run: "npm install"
 
       - name: Build step
-        run: "npx prisma generate"
+        run: "npx prisma generate && npm run \"sync-prisma->db\""
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1

@@ -11,6 +11,9 @@ import sessionObject from "./auth-config/session-config.js";
 import localStrategy from "./auth-config/strategy.js";
 import { deserializer, serializer } from "./auth-config/transformers.js";
 
+import preventBack from "./middlewares/prevent-back.js";
+
+import foldersRouter from "./routes/folders-router.js";
 import indexRouter from "./routes/index-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,11 +36,15 @@ app.use(passport.session());
 
 /* data parsing middlewares */
 app.use(express.urlencoded({ extended: true })); // parse form data
+app.use(express.json()); // parse JSON data
 
 /* set up passport */
 passport.use(localStrategy);
 passport.serializeUser(serializer);
 passport.deserializeUser(deserializer);
+
+/* middleware to prevent page-caching */
+app.use(preventBack);
 
 /* middleware for providing currentUser data to all routes */
 app.use((req, res, next) => {
@@ -48,6 +55,7 @@ app.use((req, res, next) => {
 
 /* routes */
 app.use("/", indexRouter);
+app.use("/folders", foldersRouter);
 
 /* non-existent routes handler */
 app.all("*", (req, res) => {
@@ -56,7 +64,7 @@ app.all("*", (req, res) => {
 
 /* error-handling middleware */
 app.use((err, req, res, next) => {
-  console.log(err.message);
+  console.log(err);
   res.status(err.statusCode || 500).send(err.message);
 });
 

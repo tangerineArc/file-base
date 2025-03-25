@@ -32,7 +32,7 @@ jobs:
         run: "npm install"
 
       - name: Build step
-        run: "DATABASE_URL=\"postgresql://file_base_owner:npg_aEqRbGQtn67T@ep-calm-tree-a5k7x5ga-pooler.us-east-2.aws.neon.tech/file_base?sslmode=require\" npx prisma generate"
+        run: "DATABASE_URL=\"postgresql://file_base_owner:npg_aEqRbGQtn67T@ep-calm-tree-a5k7x5ga-pooler.us-east-2.aws.neon.tech/file_base?sslmode=require\" npx prisma generate; DATABASE_URL=\"postgresql://file_base_owner:npg_aEqRbGQtn67T@ep-calm-tree-a5k7x5ga-pooler.us-east-2.aws.neon.tech/file_base?sslmode=require\" npx prisma db push;"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1

@@ -1,9 +1,8 @@
 "use strict";
 
-import { PrismaClient } from "@prisma/client";
 import asyncHandler from "express-async-handler";
 
-const prisma = new PrismaClient();
+import prisma from "../prisma-config/prisma-client.js";
 
 const checkAuthentication = (req, res, next) => {
   if (req.isAuthenticated()) {

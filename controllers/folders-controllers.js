@@ -1,9 +1,10 @@
 "use strict";
 
-import { PrismaClient } from "@prisma/client";
 import asyncHandler from "express-async-handler";
 import { validationResult } from "express-validator";
 import { randomBytes } from "node:crypto";
+
+import prisma from "../prisma-config/prisma-client.js";
 
 import storageClient from "../supabase-config/storage-client.js";
 
@@ -12,8 +13,6 @@ import formatDate from "../utils/date-formatter.js";
 import provideIcon from "../utils/icon-provider.js";
 
 import validateFolder from "../validators/folder-validator.js";
-
-const prisma = new PrismaClient();
 
 const renderFoldersPage = asyncHandler(async (req, res) => {
   let { folders: allFolders } = await prisma.user.findUnique({

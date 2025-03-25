@@ -1,16 +1,15 @@
 "use strict";
 
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import { validationResult } from "express-validator";
 import passport from "passport";
 
+import prisma from "../prisma-config/prisma-client.js";
+
 import storageClient from "../supabase-config/storage-client.js";
 
 import validateUser from "../validators/user-validator.js";
-
-const prisma = new PrismaClient();
 
 const renderSignInPage = (req, res) => {
   const errorMessages = req.session.messages;

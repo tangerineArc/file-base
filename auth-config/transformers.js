@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../prisma-config/prisma-client.js";
 
 const serializer = (user, done) => {
   done(null, user.id);

@@ -1,10 +1,9 @@
 "use strict";
 
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Strategy as LocalStrategy } from "passport-local";
 
-const prisma = new PrismaClient();
+import prisma from "../prisma-config/prisma-client.js";
 
 const verifyCallback = async (username, password, done) => {
   try {

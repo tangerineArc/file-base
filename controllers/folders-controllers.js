@@ -7,6 +7,7 @@ import { randomBytes } from "node:crypto";
 
 import storageClient from "../supabase-config/storage-client.js";
 
+import buildFolderTree from "../utils/tree-builder.js";
 import formatDate from "../utils/date-formatter.js";
 import provideIcon from "../utils/icon-provider.js";
 
@@ -15,46 +16,12 @@ import validateFolder from "../validators/folder-validator.js";
 const prisma = new PrismaClient();
 
 const renderFoldersPage = asyncHandler(async (req, res) => {
-  const folderStructure = {
-    name: "tangerine",
-    state: "open",
-    children: [
-      {
-        name: "exar",
-        state: "open",
-        children: [
-          {
-            name: "qar1",
-            state: "open",
-            children: [
-              {
-                name: "sar",
-                state: "closed",
-                children: [
-                  {
-                    name: "mar",
-                    state: "open",
-                    children: [
-                      {
-                        name: "rar",
-                        state: "closed",
-                        children: [],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            name: "qar2",
-            state: "closed",
-            children: [],
-          },
-        ],
-      },
-    ],
-  };
+  let { folders: allFolders } = await prisma.user.findUnique({
+    where: { id: req.user.id },
+    include: { folders: true },
+  });
+
+  const folderStructure = buildFolderTree(allFolders);
 
   const { folderId } = req.params;
 

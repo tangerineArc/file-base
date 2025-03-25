@@ -7,6 +7,8 @@ nav {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #495057;
 
+  position: relative;
+
   & > a {
     display: flex;
     align-items: center;
@@ -37,4 +39,32 @@ nav {
       padding: 0.5rem 0.8rem;
     }
   }
+
+  & > span {
+    width: 100vw;
+    height: 2px;
+    background-color: red;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    transform: scaleX(0);
+  }
+}
+
+@keyframes loader {
+  0% {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  100% {
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+}
+
+.loading {
+  animation: loader 1s infinite alternate;
 }

@@ -3,32 +3,24 @@
 import { Router } from "express";
 
 import {
-  logInUser,
-  logOutUser,
-  registerNewUser,
   renderHomePage,
-  renderLoginPage,
-  renderRegisterPage,
+  renderSignInPage,
+  renderSignUpPage,
+  signInUser,
+  signOutUser,
+  signUpUser,
 } from "../controllers/index-controllers.js";
 
 const indexRouter = Router();
 
 indexRouter.get("/", renderHomePage);
 
-indexRouter.get("/login", renderLoginPage);
-indexRouter.post("/login", logInUser);
+indexRouter.get("/sign-in", renderSignInPage);
+indexRouter.post("/sign-in", signInUser);
 
-indexRouter.get("/register", renderRegisterPage);
-indexRouter.post("/register", registerNewUser);
+indexRouter.get("/sign-up", renderSignUpPage);
+indexRouter.post("/sign-up", signUpUser);
 
-indexRouter.get("/logout", logOutUser);
-
-indexRouter.get("/login-success", (req, res) => {
-  res.send("Successfully logged in");
-});
-
-indexRouter.get("/login-failure", (req, res) => {
-  res.send("Credentials do not match");
-});
+indexRouter.get("/sign-out", signOutUser);
 
 export default indexRouter;

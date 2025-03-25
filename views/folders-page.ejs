@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/styles/index.css">
+  <link rel="stylesheet" href="/styles/navbar.css">
+  <link rel="stylesheet" href="/styles/folders-page.css">
+
+  <script defer src="/scripts/modal.js"></script>
+  <script defer src="/scripts/drawer.js"></script>
+  <script defer src="/scripts/share-controller.js"></script>
+
+  <title>FileBase | Folders</title>
+</head>
+
+<body>
+  <%- include("partials/navbar.ejs"); %>
+
+  <div id="container">
+    <dialog id="new-folder-dialog">
+      <form action="/folders/<%= folderId ? `${folderId}/create-folder` : 'create-folder' %>" method="POST">
+        <p>New Folder</p>
+        <input type="text" name="folderName" placeholder="folder name" required>
+
+        <div>
+          <button type="reset" class="modal-cancel-button">Cancel</button>
+          <button type="submit" class="modal-submit-button">Create</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="new-file-dialog">
+      <form action="/folders/<%= folderId ? `${folderId}/create-file` : 'create-file' %>" method="POST" enctype="multipart/form-data">
+        <p>
+          New File <span>2MB max</span>
+        </p>
+        <input type="file" name="file" required />
+
+        <div>
+          <button type="reset" class="modal-cancel-button">Cancel</button>
+          <button type="submit" class="modal-submit-button">Create</button>
+        </div>
+      </form>
+    </dialog>
+
+    <aside>
+      <div>
+        <button id="new-folder-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 10v6" />
+            <path d="M9 13h6" />
+            <path
+              d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+          </svg>
+          New Folder
+        </button>
+        <button id="new-file-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M9 15h6" />
+            <path d="M12 18v-6" />
+          </svg>
+          New File
+        </button>
+      </div>
+      <div>
+        <div class="parent selected">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+          <a href="/folders/">tangerine</a>
+        </div>
+        <%- traverse(folderStructure); %>
+      </div>
+    </aside>
+
+    <main>
+      <div>
+        <% path.forEach(item => { %>
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+            <a href="/folders/<%= item.id %>">
+              <%= item.name %>
+            </a>
+          </div>
+        <% }); %>
+      </div>
+
+      <section>
+
+        <% folders.forEach(folder => { %>
+          <div tabindex="0" class="folder">
+            <dialog class="sidebar">
+              <div>
+                <div>
+                  <p>
+                    Folder Details
+                    <button class="close-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                      </svg>
+                    </button>
+                  </p>
+                  <div>
+                    <p>
+                      <span>Folder name</span>
+                      <%= folder.name %>
+                    </p>
+                    <p>
+                      <span>Creation time</span>
+                      <%= formatDate(folder.createdAt) %>
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <button class="delete-folder-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                    Delete
+                  </button>
+                  <dialog class="delete-folder-dialog">
+                    <form action="/folders/<%= folderId ? `${folderId}/delete-folder` : 'delete-folder' %>/<%= folder.id %>" method="POST">
+                      <p>
+                        Are you sure?
+                      </p>
+                      <div>
+                        <button type="reset" class="modal-cancel-button">
+                          Cancel
+                        </button>
+                        <button type="submit" class="modal-submit-button">Delete</button>
+                      </div>
+                    </form>
+                  </dialog>
+                </div>
+              </div>
+            </dialog>
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon">
+              <path
+                d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+            </svg>
+
+            <a title="<%= folder.name %>" href="/folders/<%= folder.id %>">
+              <%= folder.name.slice(0, 13) === folder.name ? folder.name : `${folder.name.slice(0, 13)}...` %>
+            </a>
+          </div>
+        <% }); %>
+
+        <% files.forEach(file => { %>
+          <div tabindex="0" class="file">
+            <dialog class="sidebar">
+              <div>
+                <div>
+                  <p>
+                    File Details
+                    <button class="close-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                      </svg>
+                    </button>
+                  </p>
+                  <div>
+                    <p>
+                      <span>File name</span>
+                      <%= file.originalName %>
+                    </p>
+                    <p>
+                      <span>Creation time</span>
+                      <%= formatDate(file.createdAt) %>
+                    </p>
+                    <p>
+                      <span>File size</span>
+                      <%= file.fileSize %> bytes
+                    </p>
+                    <p>
+                      <span>File type</span>
+                      <%= file.mimetype %>
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <button class="share-file-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                      <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+                    </svg>
+                    Share
+                  </button>
+                  <dialog class="share-file-dialog" data-id="<%= file.id %>">
+                    <p>
+                      Share Public URL
+                    </p>
+                    <div>
+                      <p>Select Visibility Duration</p>
+                      <div class="durations-group">
+                        <button data-duration="300">
+                          5 minutes
+                        </button>
+                        <button data-duration="1800">
+                          30 minutes
+                        </button>
+                        <button data-duration="3600" class="selected">
+                          1 hour
+                        </button>
+                        <button data-duration="86400">
+                          1 day
+                        </button>
+                        <button data-duration="604800">
+                          7 days
+                        </button>
+                        <button data-duration="2592000">
+                          30 days
+                        </button>
+                      </div>
+                      <p>Links will expire after the specified duration</p>
+
+                      <label>
+                        <input type="text" class="public-url" readonly placeholder="https://">
+                        <button class="copy-button" title="copy">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                          </svg>
+                        </button>
+                      </label>
+                    </div>
+                    <div>
+                      <button type="reset" class="modal-cancel-button">Cancel</button>
+                      <button type="submit" class="modal-submit-button" autofocus>
+                        Get Link
+                      </button>
+                    </div>
+                  </dialog>
+
+                  <button class="delete-file-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                    Delete
+                  </button>
+                  <dialog class="delete-file-dialog">
+                    <form action="/folders/<%= folderId ? `${folderId}/delete-file` : 'delete-file' %>/<%= file.id %>" method="POST">
+                      <p>
+                        Are you sure?
+                      </p>
+                      <div>
+                        <button type="reset" class="modal-cancel-button">
+                          Cancel
+                        </button>
+                        <button type="submit" class="modal-submit-button">Delete</button>
+                      </div>
+                    </form>
+                  </dialog>
+
+
+                  <a href="/folders/download-file/<%= file.id %>">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" x2="12" y1="15" y2="3" />
+                    </svg>
+                    Download
+                  </a>
+                </div>
+              </div>
+            </dialog>
+
+            <%- provideIcon(file.mimetype) %>
+            <p title="<%= file.originalName %>">
+              <%= file.originalName.slice(0, 13) === file.originalName ? file.originalName : `${file.originalName.slice(0, 13)}...` %>
+            </p>
+          </div>
+        <% }); %>
+
+      </section>
+    </main>
+
+  </div>
+
+</body>
+
+</html>
+
+<% function traverse(structure, pipes = 1) { %>
+  <% if (!structure.children.length) return %>
+    <% for (let child of structure.children) { %>
+      <div class="child">
+        <% for (let i = 0; i < pipes; i++) { %>
+          <div></div>
+        <% } %>
+        <div>
+          <% if (child.state === "open") { %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron open">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          <% } else { %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          <% } %>
+
+          <a href="/folders/:folderId">
+            <%= child.name %>
+          </a>
+        </div>
+      </div>
+      <% traverse(child, pipes + 1); %>
+    <% } %>
+<% } %>

@@ -1,10 +1,10 @@
 "use strict";
 
-import { PrismaClient } from "@prisma/client";
+import client from "@prisma/client";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import session from "express-session";
 
-const sessionStore = new PrismaSessionStore(new PrismaClient(), {
+const sessionStore = new PrismaSessionStore(new client.PrismaClient(), {
   checkPeriod: 2 * 60 * 1000,
   dbRecordIdIsSessionId: true,
   dbRecordIdFunction: undefined,

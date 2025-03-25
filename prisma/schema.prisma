@@ -21,14 +21,13 @@ model User {
   passwordHash String @db.VarChar(255)
 
   folders Folder[]
+  files   File[]
 }
 
 model Folder {
-  id              String    @id @default(cuid())
-  createdAt       DateTime  @default(now())
-  name            String    @db.VarChar(255)
-  public          Boolean   @default(false)
-  visibilityPoint DateTime?
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String   @db.VarChar(255)
 
   files File[]
 
@@ -36,19 +35,22 @@ model Folder {
   ownerId String
 
   parentFolderId String?
-  parent         Folder?  @relation("ParentChildren", fields: [parentFolderId], references: [id])
+  parent         Folder?  @relation("ParentChildren", fields: [parentFolderId], references: [id], onDelete: Cascade)
   children       Folder[] @relation("ParentChildren")
 }
 
 model File {
-  id              String    @id @default(cuid())
-  createdAt       DateTime  @default(now())
-  name            String    @db.VarChar(255)
-  type            String    @db.VarChar(255)
-  size            Float
-  public          Boolean   @default(false)
-  visibilityPoint DateTime?
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  filename     String
+  originalName String
+  fileSize     Int
+  destination  String
+  mimetype     String
 
-  folder   Folder? @relation(fields: [folderId], references: [id])
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId String?
 }

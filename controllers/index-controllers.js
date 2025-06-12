@@ -86,7 +86,7 @@ const signUpUser = [
 
     /* TO-DO: better error handling ui */
     if (error) {
-      await prisma.user.delete({ where: username });
+      await prisma.user.delete({ where: { username } });
       throw new Error(JSON.parse(error).message);
     }
 

@@ -87,7 +87,7 @@ const signUpUser = [
     /* TO-DO: better error handling ui */
     if (error) {
       await prisma.user.delete({ where: { username } });
-      throw new Error(JSON.parse(error).message);
+      throw new Error(error);
     }
 
     res.redirect("/sign-in?success=1");
